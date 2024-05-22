@@ -7,11 +7,7 @@ import com.wero.finalProject.dto.request.auth.RegisterRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateEmailRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateRequestDto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,12 +44,15 @@ public class UserEntity {
     @Column(name = "gender", updatable = true)
     private String gender;
 
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
     private Set<LikeEntity> likes = new HashSet<>();
 
     // TODO: Enum화 시키기
     @Column(name = "role", updatable = false)
     private String role;
+
+    @Column(name = "restriction", updatable = true)
+    private boolean restriction;
 
     public UserEntity(RegisterRequestDto dto) {
         this.userId = dto.getId();
@@ -63,14 +62,17 @@ public class UserEntity {
         this.nickName = dto.getNickName();
         this.type = "app";
         this.role = "ROLE_USER";
+        this.restriction = false;
     }
 
-    public UserEntity(String userId, String email, String type) {
+    public UserEntity(String userId, String nickName, String email, String type) {
         this.userId = userId;
+        this.nickName = nickName;
         this.password = "password";
         this.email = email;
         this.type = type;
         this.role = "ROLE_USER";
+        this.restriction = false;
     }
 
     public void patchUserEntity(UserUpdateRequestDto dto, String userId) {

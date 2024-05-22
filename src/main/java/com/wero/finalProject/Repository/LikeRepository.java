@@ -22,4 +22,8 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Integer> {
     Optional<LikeEntity> findLikeIdByUserId_UserIdAndMainfeedId_MainfeedId(String userId, Integer mainfeedId);
 
     List<LikeEntity> findMainfeedIdByUserId_UserId(String userId);
+
+    List<LikeEntity> findLikeIdByMainfeedId_MainfeedId(Integer mainfeedId);
+
+    void deleteAllByMainfeedId_MainfeedId(Integer mainfeedId);
 }

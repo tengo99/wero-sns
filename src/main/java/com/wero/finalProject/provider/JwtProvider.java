@@ -7,6 +7,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -22,8 +24,7 @@ import lombok.Setter;
  * @기능:Jwt토큰_발급
  **/
 @Component
-// @ConfigurationProperties(prefix = "jwt")
-@Setter
+@PropertySource("classpath:application.yml")
 public class JwtProvider {
 
     @Value("${jwt.secret}")

@@ -37,7 +37,7 @@ public class CustomServiceEntity {
 
     private String writeDateTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private UserEntity writer;
 

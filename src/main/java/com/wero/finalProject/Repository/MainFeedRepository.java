@@ -16,9 +16,13 @@ import com.wero.finalProject.domain.MainFeedEntity;
 
 @Repository
 public interface MainFeedRepository extends JpaRepository<MainFeedEntity, Integer> {
+
     List<MainFeedEntity> findByWriter_UserId(String userId);
 
     List<MainFeedEntity> findByWriter_UserIdAndLikes_IsLiked(String userId, boolean isLiked);
 
     List<MainFeedEntity> findByMainfeedIdIn(List<Integer> ids);
+
+    MainFeedEntity findByMainfeedId(Integer id);
+
 }

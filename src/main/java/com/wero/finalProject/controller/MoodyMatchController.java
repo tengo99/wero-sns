@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wero.finalProject.dto.response.ListResponseDto;
 import com.wero.finalProject.dto.response.feeds.FeedsResponseDto;
+import com.wero.finalProject.dto.response.feeds.ListFeedResponseDto;
 import com.wero.finalProject.service.MoodyMatchService;
 
 /**
@@ -31,13 +33,13 @@ public class MoodyMatchController {
 
     // 유저가 좋아요 하지 않은 피드 조회
     @GetMapping("/{userId}/moody-match")
-    public ResponseEntity<List<FeedsResponseDto>> getNotLikeFeeds(@PathVariable String userId) {
+    public ResponseEntity<ListResponseDto<FeedsResponseDto>> getNotLikeFeeds(@PathVariable String userId) {
         try {
             List<FeedsResponseDto> feeds = moodyMatchService.getNotLikeFeeds(userId);
-            return ResponseEntity.ok().body(feeds);
+            return ListFeedResponseDto.getFeedsSuccess(feeds);
 
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ListFeedResponseDto.getFeesFail();
         }
     }
 

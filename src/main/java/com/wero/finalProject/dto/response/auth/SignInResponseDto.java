@@ -38,4 +38,9 @@ public class SignInResponseDto extends ResponseDto {
         ResponseDto responseBody = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
     }
+
+    public static ResponseEntity<ResponseDto> restrictedUser(){
+        ResponseDto responseBody = new ResponseDto(ResponseCode.RESTRICTED_USER, ResponseMessage.RESTRICTED_USER);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+    }
 }

@@ -15,14 +15,16 @@ import lombok.Data;
 public class UpdateFeedsRequestDto {
 
     private String content;
-    private String trackName;
+    // private String trackName;
     private String category;
+    private String image;
 
     public MainFeedEntity toEntity() {
         return MainFeedEntity.builder()
                 .content(this.content)
-                .trackName(this.trackName)
+                // .trackName(this.trackName)
                 .category(this.category)
+                .image(this.image)
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.wero.finalProject.dto.response.user;
 
 import com.wero.finalProject.common.ResponseCode;
+import com.wero.finalProject.common.ResponseMessage;
 import com.wero.finalProject.dto.response.ResponseDto;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,18 @@ public class UserUpdateResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> updateFail(){
-        ResponseDto responseBody  = new ResponseDto(ResponseCode.UPDATE_FAIL, ResponseCode.UPDATE_FAIL);
+    public static ResponseEntity<ResponseDto> duplicateNickName(){
+        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATE_NICKNAME, ResponseMessage.DUPLICATE_NICKNAME);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseDto> duplicateEmail(){
+        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATE_EMAIL, ResponseMessage.DUPLICATE_EMAIL);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDto> notExistUser(){
-        ResponseDto responseBody = new ResponseDto(ResponseCode.NOT_EXIST_USER, ResponseCode.NOT_EXIST_USER);
+        ResponseDto responseBody = new ResponseDto(ResponseCode.NOT_EXIST_USER, ResponseMessage.NOT_EXIST_USER);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
 

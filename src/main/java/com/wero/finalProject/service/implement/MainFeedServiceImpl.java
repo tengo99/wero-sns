@@ -76,6 +76,32 @@ public class MainFeedServiceImpl implements MainFeedService {
         }
     }
 
+    // 피드 id로 피드 하나 찾기
+    @Override
+    public FeedsResponseDto getOneFeeds(String userId, Integer id) {
+        try {
+            MainFeedEntity feed = mainFeedRepository.findByMainfeedId(id);
+
+            Optional<LikeEntity> like = likeRepository
+                    .findIsLikedByUserId_UserIdAndMainfeedId_MainfeedId(userId, id);
+            boolean isLiked = like.map(LikeEntity::isLiked).orElse(false);
+            FeedsResponseDto responseDtos = new FeedsResponseDto(
+                    feed.getMainfeedId(),
+                    feed.getContent(),
+                    feed.getTrackName(),
+                    feed.getImage(),
+                    feed.getCreateDate(),
+                    feed.getModificateDate(),
+                    feed.getCategory(),
+                    isLiked,
+                    feed.getWriter().getUserId());
+
+            return responseDtos;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // 유저 피드 userId로 찾기
     @Override
     public List<FeedsResponseDto> getFeedByUserId(String userId) {
@@ -155,6 +181,7 @@ public class MainFeedServiceImpl implements MainFeedService {
                     .content(mainFeedEntity.getContent())
                     .trackName(mainFeedEntity.getTrackName())
                     .category(mainFeedEntity.getCategory())
+                    .image(mainFeedEntity.getImage())
                     .createDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .writer(user)
                     .build();
@@ -167,10 +194,11 @@ public class MainFeedServiceImpl implements MainFeedService {
 
     // 메인 피드 수정
     @Override
-    public MainFeedEntity updateFeed(Integer id, MainFeedEntity feedDetails) {
+    public MainFeedEntity updateFeed(Integer id, MainFeedEntity feedDetails, String userId) {
         MainFeedEntity mainFeedEntity = mainFeedRepository.findById(id).orElse(null);
 
         try {
+            UserEntity user = userService.findUserById(userId);
             if (mainFeedEntity == null || mainFeedEntity.getMainfeedId() == null) {
 
                 throw new EntityNotFoundException();
@@ -181,8 +209,10 @@ public class MainFeedServiceImpl implements MainFeedService {
                         .content(feedDetails != null ? feedDetails.getContent() : mainFeedEntity.getContent())
                         .trackName(feedDetails != null ? feedDetails.getTrackName() : mainFeedEntity.getTrackName())
                         .category(feedDetails != null ? feedDetails.getCategory() : mainFeedEntity.getCategory())
+                        .image(feedDetails != null ? feedDetails.getImage() : mainFeedEntity.getImage())
                         .createDate(mainFeedEntity.getCreateDate())
                         .modificateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        .writer(user)
                         .build();
                 return mainFeedRepository.save(updateFeed);
             }
@@ -195,12 +225,34 @@ public class MainFeedServiceImpl implements MainFeedService {
     // 메인 피드 삭제
     @Override
     public void deleteFeed(Integer id) {
-        MainFeedEntity mainFeedEntity = mainFeedRepository.findById(id).orElse(null);
-        if (mainFeedEntity == null || mainFeedEntity.getMainfeedId() == null) {
-            throw new EntityNotFoundException();
-        }
+
         try {
+            MainFeedEntity mainFeedEntity = mainFeedRepository.findById(id).orElse(null);
+
+            if (mainFeedEntity == null || mainFeedEntity.getMainfeedId() == null) {
+                throw new EntityNotFoundException();
+            }
+
+            List<LikeEntity> likeEntityList = likeRepository.findLikeIdByMainfeedId_MainfeedId(id);
+
+            if (likeEntityList == null || likeEntityList.size() == 0) {
+                throw new EntityNotFoundException();
+            }
+
+            List<Integer> likeEntityIds = new ArrayList<>();
+
+            // LikeEntity에서 id를 추출하여 Integer타입의 리스트에 추가
+            for (LikeEntity likeEntity : likeEntityList) {
+                likeEntityIds.add(likeEntity.getLikeId());
+            }
+
+            // LikeEntity 삭제
+            for (Integer likeId : likeEntityIds) {
+                likeRepository.deleteById(likeId);
+            }
+
             mainFeedRepository.deleteById(id);
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete feed", e);
         }

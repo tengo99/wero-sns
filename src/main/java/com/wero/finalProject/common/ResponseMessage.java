@@ -50,6 +50,8 @@ public interface ResponseMessage {
     // TODO:403
     String NO_PERMISSION = "No Permission";
 
+    String RESTRICTED_USER = "불건전 행위로 인한 정지 유저 입니다.";
+
     // TODO: HTTP500
     String DATABASE_ERROR = "database_error";
 

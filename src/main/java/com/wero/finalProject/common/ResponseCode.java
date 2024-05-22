@@ -26,6 +26,8 @@ public interface ResponseCode {
     String NOT_EXIST_DIARY = "ND";
     String DUPLICATE_NICKNAME = "DN";
     String DELETE_FAIL = "DF";
+
+    String RESTRICTED_USER = "RU";
     // TODO: 400 추가
     String CREATE_FAIL = "CAF";// 생성 실패
     String DELET_FAIL = "DF";

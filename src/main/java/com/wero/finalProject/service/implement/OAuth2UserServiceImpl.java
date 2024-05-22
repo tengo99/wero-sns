@@ -1,6 +1,6 @@
 package com.wero.finalProject.service.implement;
 
-import com.wero.finalProject.domain.CustomOauth2User;
+import com.wero.finalProject.domain.CustomOAuth2User;
 import com.wero.finalProject.Repository.UserRepository;
 import com.wero.finalProject.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @파일명:OAuth2UserServiceImpl
  * @기능:유저_OAuth인증_서비스_로직
  **/
-@Service("OAuth2UserServiceImpl")
+@Service
 @RequiredArgsConstructor
 public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
@@ -35,31 +35,34 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 //        }
         UserEntity userEntity = null;
         String userId = null;
+        String nickName = null;
         String email  = "email@email.com";
 
         if(oauth2ClientName.equals("kakao")){
             userId = "kakao_"+oAuth2User.getAttributes().get("id");
-            userEntity = new UserEntity(userId, "email@email.com", "kakao");
+            nickName =  "kakao_"+oAuth2User.getAttributes().get("id");
+            userEntity = new UserEntity(userId, nickName, "email@email.com", "kakao");
         }
 
         if(oauth2ClientName.equals("naver")){
             Map<String, String> responseMap = (Map<String, String>) oAuth2User.getAttributes().get("response");
             userId = "naver_"+responseMap.get("id").substring(0, 14);
+            nickName = "naver_"+responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
-            userEntity = new UserEntity(userId, email, "naver");
+            userEntity = new UserEntity(userId, nickName, email,  "naver");
         }
 
-        if(oauth2ClientName.equals("google")){
-            userId = "google_"+oAuth2User.getAttributes().get("id");
-            userEntity = new UserEntity(userId, "email@email.com", "google");
-        }
+//        if(oauth2ClientName.equals("google")){
+//            userId = "google_"+oAuth2User.getAttributes().get("id");
+//            userEntity = new UserEntity(userId, "email@email.com", "google");
+//        }
         userRepository.save(userEntity);
 
 //        if(oauth2ClientName.equals("google")){
 //
 //        }
 
-        return new CustomOauth2User(userId);
+        return new CustomOAuth2User(userId);
     }
 }
 

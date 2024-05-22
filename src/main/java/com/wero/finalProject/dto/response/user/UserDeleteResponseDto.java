@@ -19,7 +19,7 @@ public class UserDeleteResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> userDelete(){
+    public static ResponseEntity<ResponseDto> notAuthorized(){
         ResponseDto responseBody = new ResponseDto(ResponseCode.DELETE_FAIL, ResponseMessage.DELETE_FAIL);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }

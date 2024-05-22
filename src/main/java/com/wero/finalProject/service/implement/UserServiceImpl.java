@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,15 +49,27 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<? super UserUpdateResponseDto> userUpdate(UserUpdateRequestDto dto, String userId) {
         try {
             UserEntity user = userRepository.findByUserId(userId);
-            if (user == null)
-                return UserUpdateResponseDto.notExistUser();
 
+            String nickName = dto.getNickName();
+            String email = dto.getEmail();
             String password = dto.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
             dto.setPassword(encodedPassword);
 
-            user.patchUserEntity(dto, userId);
+            boolean isSameNickName = nickName.equals(user.getNickName());
+            boolean isSameEmail = email.equals(user.getEmail());
 
+            boolean isExistedNickName = !isSameNickName && userRepository.existsByNickName(nickName);
+            boolean isExistedEmail = !isSameEmail && userRepository.existsByEmail(email);
+
+            if (user == null)
+                return UserUpdateResponseDto.notExistUser();
+            if(isExistedEmail)
+                return UserUpdateResponseDto.duplicateEmail();
+            if (isExistedNickName)
+                return UserUpdateResponseDto.duplicateNickName();
+
+            user.patchUserEntity(dto, userId);
             userRepository.save(user);
             return UserUpdateResponseDto.success();
         } catch (Exception e) {
@@ -75,6 +86,8 @@ public class UserServiceImpl implements UserService {
                 return UserUpdateResponseDto.notExistUser();
 
             String email = dto.getEmail();
+            boolean isExistEmail = userRepository.existsByEmail(email);
+            if(isExistEmail) return  UserUpdateResponseDto.duplicateEmail();
             dto.setEmail(email);
 
             user.patchUserEmail(dto, userId);
@@ -102,6 +115,7 @@ public class UserServiceImpl implements UserService {
 
                 // 파일이름 인코딩
                 String encodedFileName = URLEncoder.encode(image.getOriginalFilename(), StandardCharsets.UTF_8);
+
                 // 파일이름 디코딩
                 String decodedFileName = URLDecoder.decode(encodedFileName, StandardCharsets.UTF_8.toString());
 
@@ -132,13 +146,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<? super UserDeleteResponseDto> userDelete(UserDeleteRequestDto dto, String userId) {
         try {
+            if (!dto.getUserId().equals(userId)) {
+                return UserDeleteResponseDto.notAuthorized();
+            }
+
             UserEntity user = userRepository.findByUserId(userId);
-            if (user == null)
-                return UserDeleteResponseDto.notExistUser();
+            if (user == null) return UserDeleteResponseDto.notExistUser();
 
             List<ImageEntity> userImages = imageRepository.findByUserId(user);
             imageRepository.deleteAll(userImages);
-
             userRepository.delete(user);
 
             return UserDeleteResponseDto.success();

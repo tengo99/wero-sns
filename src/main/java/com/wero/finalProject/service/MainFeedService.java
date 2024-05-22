@@ -17,13 +17,15 @@ public interface MainFeedService {
 
     List<FeedsResponseDto> getAllFeeds(String userId);
 
+    FeedsResponseDto getOneFeeds(String userId, Integer id);
+
     List<FeedsResponseDto> getFeedByUserId(String userId);
 
     List<FeedsResponseDto> getFeedByUserIdAndIsLiked(String userId);
 
     MainFeedEntity createFeed(String userId, MainFeedEntity mainFeed);
 
-    MainFeedEntity updateFeed(Integer id, MainFeedEntity mainFeed);
+    MainFeedEntity updateFeed(Integer id, MainFeedEntity mainFeed, String userId);
 
     void deleteFeed(Integer id);
 

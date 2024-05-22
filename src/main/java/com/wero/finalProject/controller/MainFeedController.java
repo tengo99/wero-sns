@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wero.finalProject.dto.request.feeds.CreateFeedsRequestDto;
 import com.wero.finalProject.dto.request.feeds.UpdateFeedsRequestDto;
+import com.wero.finalProject.dto.response.FindOneResponseDto;
 import com.wero.finalProject.dto.response.ListResponseDto;
 import com.wero.finalProject.dto.response.ResponseDto;
 import com.wero.finalProject.dto.response.feeds.CreateFeedsResponseDto;
 import com.wero.finalProject.dto.response.feeds.DeleteFeedsResponseDto;
 import com.wero.finalProject.dto.response.feeds.FeedsResponseDto;
+import com.wero.finalProject.dto.response.feeds.FindOneFeedsResponse;
 import com.wero.finalProject.dto.response.feeds.LikeResponseDto;
 import com.wero.finalProject.dto.response.feeds.ListFeedResponseDto;
 import com.wero.finalProject.dto.response.feeds.UpdateFeedsResponseDto;
@@ -51,6 +53,19 @@ public class MainFeedController {
             return ListFeedResponseDto.getFeedsSuccess(feeds);
         } catch (Exception e) {
             return ListFeedResponseDto.getFeesFail();
+        }
+
+    }
+
+    // 피드 하나 조회
+    @GetMapping("/{userId}/{id}")
+    public ResponseEntity<FindOneResponseDto> getOneFeeds(@PathVariable String userId, @PathVariable Integer id) {
+
+        try {
+            FeedsResponseDto feeds = mainFeedService.getOneFeeds(userId, id);
+            return FindOneFeedsResponse.getFeedsSuccess(feeds);
+        } catch (Exception e) {
+            return FindOneFeedsResponse.getFeesFail();
         }
 
     }
@@ -100,7 +115,7 @@ public class MainFeedController {
     public ResponseEntity<?> updateFeed(@RequestBody UpdateFeedsRequestDto requestDto, @PathVariable String userId,
             @PathVariable Integer id) {
         try {
-            mainFeedService.updateFeed(id, requestDto.toEntity());
+            mainFeedService.updateFeed(id, requestDto.toEntity(), userId);
             return UpdateFeedsResponseDto.update();
         } catch (IllegalArgumentException e) {
             return UpdateFeedsResponseDto.updateFail();

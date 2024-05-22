@@ -1,5 +1,7 @@
 package com.wero.finalProject.service.implement;
 
+import com.wero.finalProject.dto.request.auth.*;
+import com.wero.finalProject.dto.response.auth.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,17 +12,7 @@ import com.wero.finalProject.Repository.UserRepository;
 import com.wero.finalProject.common.CertificationNumber;
 import com.wero.finalProject.domain.Certification;
 import com.wero.finalProject.domain.UserEntity;
-import com.wero.finalProject.dto.request.auth.CheckCertificationRequestDto;
-import com.wero.finalProject.dto.request.auth.EmailCertificationRequestDto;
-import com.wero.finalProject.dto.request.auth.IdCheckRequestDto;
-import com.wero.finalProject.dto.request.auth.RegisterRequestDto;
-import com.wero.finalProject.dto.request.auth.SignInRequestDto;
 import com.wero.finalProject.dto.response.ResponseDto;
-import com.wero.finalProject.dto.response.auth.CheckCertificationResponseDto;
-import com.wero.finalProject.dto.response.auth.EmailCertificationResponseDto;
-import com.wero.finalProject.dto.response.auth.IdCheckResponseDto;
-import com.wero.finalProject.dto.response.auth.RegisterResponseDto;
-import com.wero.finalProject.dto.response.auth.SignInResponseDto;
 import com.wero.finalProject.provider.EmailProvider;
 import com.wero.finalProject.provider.JwtProvider;
 import com.wero.finalProject.service.AuthService;
@@ -161,10 +153,14 @@ public class AuthServiceImpl implements AuthService {
         String token = null;
         String userId = dto.getId();
         try {
-
             UserEntity userEntity = userRepository.findByUserId(userId);
             if (userEntity == null)
-                SignInResponseDto.signInFail();
+               return SignInResponseDto.signInFail();
+
+            boolean restriction = userEntity.isRestriction();
+            if(restriction)
+                return SignInResponseDto.restrictedUser();
+
 
             String password = dto.getPassword();
             String encodedPassword = userEntity.getPassword();
