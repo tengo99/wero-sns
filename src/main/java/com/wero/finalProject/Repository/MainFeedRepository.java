@@ -2,6 +2,8 @@ package com.wero.finalProject.Repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +19,7 @@ import com.wero.finalProject.domain.MainFeedEntity;
 @Repository
 public interface MainFeedRepository extends JpaRepository<MainFeedEntity, Integer> {
 
-    List<MainFeedEntity> findByWriter_UserId(String userId);
+    Page<MainFeedEntity> findByWriter_UserId(String userId, Pageable pageable);
 
     List<MainFeedEntity> findByWriter_UserIdAndLikes_IsLiked(String userId, boolean isLiked);
 

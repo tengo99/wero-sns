@@ -10,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @작성자:최기원
  * @작성날짜:2024/05/04
@@ -42,8 +40,10 @@ public class DiaryEntity {
     @Column(name = "bookmark_count")
     private int bookMarkCount;
 
-    @Column(name = "diary_image")
-    private String diaryImage;
+    @Column(name = "image", nullable = true)
+    private String image;
+
+    // like, songTitle
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -60,14 +60,14 @@ public class DiaryEntity {
         this.emotion = dto.getEmotion();
         this.writer = user;
         this.bookMarkCount = 0;
-        this.diaryImage=dto.getDiaryImageList().get(0);
+        this.image = dto.getImage();
     }
 
     public void patchDiary(PatchDiaryRequestDto dto) {
         this.diaryContent = dto.getDiaryContent();
         this.emotion = dto.getEmotion();
         this.song = dto.getSong();
-        this.diaryImage=dto.getDiaryImageList().get(0);
+        this.image = dto.getImage();
     }
 
     public void increaseBookMarkCount() {

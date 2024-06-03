@@ -83,7 +83,7 @@ public class DiaryController {
     @GetMapping("/diaryList") // get방식==>전체 조회
     public ResponseEntity<? super GetDiaryListResponseDto> getDiaryList(
             @AuthenticationPrincipal String userId) {
-        ResponseEntity<? super GetDiaryListResponseDto> response = diaryService.getDiaryList();
+        ResponseEntity<? super GetDiaryListResponseDto> response = diaryService.getDiaryList(userId);
         return response;
     }
 

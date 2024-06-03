@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +27,7 @@ import com.wero.finalProject.dto.request.user.UserUpdateEmailRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateRequestDto;
 import com.wero.finalProject.dto.response.ResponseDto;
 import com.wero.finalProject.dto.response.user.UserDeleteResponseDto;
+import com.wero.finalProject.dto.response.user.UserResponseDto;
 import com.wero.finalProject.dto.response.user.UserUpdateResponseDto;
 import com.wero.finalProject.service.UserService;
 
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
             if (user == null)
                 return UserUpdateResponseDto.notExistUser();
-            if(isExistedEmail)
+            if (isExistedEmail)
                 return UserUpdateResponseDto.duplicateEmail();
             if (isExistedNickName)
                 return UserUpdateResponseDto.duplicateNickName();
@@ -87,7 +90,8 @@ public class UserServiceImpl implements UserService {
 
             String email = dto.getEmail();
             boolean isExistEmail = userRepository.existsByEmail(email);
-            if(isExistEmail) return  UserUpdateResponseDto.duplicateEmail();
+            if (isExistEmail)
+                return UserUpdateResponseDto.duplicateEmail();
             dto.setEmail(email);
 
             user.patchUserEmail(dto, userId);
@@ -144,6 +148,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<String> findUserPicture(String userId) {
+        try {
+            UserEntity user = userRepository.findByUserId(userId);
+            List<ImageEntity> userImages = imageRepository.findByUserId(user);
+            return userImages.stream()
+                    .map(ImageEntity::getImage)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
     public ResponseEntity<? super UserDeleteResponseDto> userDelete(UserDeleteRequestDto dto, String userId) {
         try {
             if (!dto.getUserId().equals(userId)) {
@@ -151,7 +168,8 @@ public class UserServiceImpl implements UserService {
             }
 
             UserEntity user = userRepository.findByUserId(userId);
-            if (user == null) return UserDeleteResponseDto.notExistUser();
+            if (user == null)
+                return UserDeleteResponseDto.notExistUser();
 
             List<ImageEntity> userImages = imageRepository.findByUserId(user);
             imageRepository.deleteAll(userImages);
@@ -170,7 +188,21 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new RuntimeException("User not found");
         }
+
         return user;
+    }
+
+    @Override
+    public UserResponseDto findByUserId(String userId) {
+        UserEntity user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        UserResponseDto responseDto = new UserResponseDto(userId, user.getEmail(), user.getNickName(), user.getType(),
+                user.getGender(), user.getPassword());
+
+        return responseDto;
     }
 
 }

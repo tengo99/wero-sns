@@ -1,7 +1,5 @@
 package com.wero.finalProject.service.implement;
 
-import com.wero.finalProject.dto.request.auth.*;
-import com.wero.finalProject.dto.response.auth.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +10,19 @@ import com.wero.finalProject.Repository.UserRepository;
 import com.wero.finalProject.common.CertificationNumber;
 import com.wero.finalProject.domain.Certification;
 import com.wero.finalProject.domain.UserEntity;
+import com.wero.finalProject.dto.request.auth.CheckCertificationRequestDto;
+import com.wero.finalProject.dto.request.auth.EmailCertificationRequestDto;
+import com.wero.finalProject.dto.request.auth.IdCheckRequestDto;
+import com.wero.finalProject.dto.request.auth.RefreshTokenRequestDto;
+import com.wero.finalProject.dto.request.auth.RegisterRequestDto;
+import com.wero.finalProject.dto.request.auth.SignInRequestDto;
 import com.wero.finalProject.dto.response.ResponseDto;
+import com.wero.finalProject.dto.response.auth.CheckCertificationResponseDto;
+import com.wero.finalProject.dto.response.auth.EmailCertificationResponseDto;
+import com.wero.finalProject.dto.response.auth.IdCheckResponseDto;
+import com.wero.finalProject.dto.response.auth.RefreshTokenResponseDto;
+import com.wero.finalProject.dto.response.auth.RegisterResponseDto;
+import com.wero.finalProject.dto.response.auth.SignInResponseDto;
 import com.wero.finalProject.provider.EmailProvider;
 import com.wero.finalProject.provider.JwtProvider;
 import com.wero.finalProject.service.AuthService;
@@ -151,16 +161,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
         String token = null;
+        String refreshToken = null;
         String userId = dto.getId();
         try {
             UserEntity userEntity = userRepository.findByUserId(userId);
             if (userEntity == null)
-               return SignInResponseDto.signInFail();
+                return SignInResponseDto.signInFail();
 
             boolean restriction = userEntity.isRestriction();
-            if(restriction)
+            if (restriction)
                 return SignInResponseDto.restrictedUser();
-
 
             String password = dto.getPassword();
             String encodedPassword = userEntity.getPassword();
@@ -169,12 +179,36 @@ public class AuthServiceImpl implements AuthService {
                 return SignInResponseDto.signInFail();
 
             token = jwtProvider.create(userId);
+            refreshToken = jwtProvider.refreshCreate(userId);
 
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.dataBaseError();
+
         }
-        return SignInResponseDto.success(token, userId);
+        return SignInResponseDto.success(token, userId, refreshToken);
+    }
+
+    @Override
+    public ResponseEntity<?> refreshToken(RefreshTokenRequestDto refreshTokenRequest) {
+
+        String newAccessToken = null;
+
+        try {
+            String refreshToken = refreshTokenRequest.getRefreshToken();
+
+            if (jwtProvider.validateRefreshToken(refreshToken)) {
+                String userId = jwtProvider.validate(refreshToken);
+                newAccessToken = jwtProvider.create(userId);
+            }
+
+            return RefreshTokenResponseDto.success(newAccessToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RefreshTokenResponseDto.fail();
+
+        }
+
     }
 
 }

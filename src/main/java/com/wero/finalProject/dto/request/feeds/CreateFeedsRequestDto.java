@@ -1,5 +1,8 @@
 package com.wero.finalProject.dto.request.feeds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wero.finalProject.domain.MainFeedEntity;
 
 import lombok.Data;
@@ -26,6 +29,19 @@ public class CreateFeedsRequestDto {
                 .category(this.category)
                 .image(this.image)
                 .build();
+    }
+
+    public List<MainFeedEntity> toEntities() {
+        List<MainFeedEntity> entities = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            MainFeedEntity entity = MainFeedEntity.builder()
+                    .content(this.content)
+                    .category(this.category)
+                    .image(this.image)
+                    .build();
+            entities.add(entity);
+        }
+        return entities;
     }
 
 }

@@ -21,16 +21,18 @@ public class SignInResponseDto extends ResponseDto {
     private String userId;
     private String token;
     private int expirationTime;
+    private String refreshToken;
 
-    private SignInResponseDto(String token, String userId) {
+    private SignInResponseDto(String token, String userId, String refreshToken) {
         super();
         this.userId = userId;
         this.token = token;
         this.expirationTime = 3600;
+        this.refreshToken = refreshToken;
     }
 
-    public static ResponseEntity<SignInResponseDto> success(String token, String userId) {
-        SignInResponseDto responseBody = new SignInResponseDto(token, userId);
+    public static ResponseEntity<SignInResponseDto> success(String token, String userId, String refreshToken) {
+        SignInResponseDto responseBody = new SignInResponseDto(token, userId, refreshToken);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
@@ -39,7 +41,7 @@ public class SignInResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> restrictedUser(){
+    public static ResponseEntity<ResponseDto> restrictedUser() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.RESTRICTED_USER, ResponseMessage.RESTRICTED_USER);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
     }

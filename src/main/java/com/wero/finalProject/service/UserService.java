@@ -1,5 +1,7 @@
 package com.wero.finalProject.service;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 
 import com.wero.finalProject.domain.UserEntity;
@@ -8,6 +10,7 @@ import com.wero.finalProject.dto.request.user.UserPostPictureRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateEmailRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateRequestDto;
 import com.wero.finalProject.dto.response.user.UserDeleteResponseDto;
+import com.wero.finalProject.dto.response.user.UserResponseDto;
 import com.wero.finalProject.dto.response.user.UserUpdateResponseDto;
 
 /**
@@ -26,4 +29,9 @@ public interface UserService {
     ResponseEntity<? super UserDeleteResponseDto> userDelete(UserDeleteRequestDto dto, String userId);
 
     UserEntity findUserById(String userId);
+
+    UserResponseDto findByUserId(String userId);
+
+    List<String> findUserPicture(String userId);
+
 }

@@ -39,6 +39,9 @@ public interface ResponseCode {
     // TODO:403
     String NO_PERMISSION = "NP";// HTTP STATUS: 403 권한 없음
 
+    // TODO:409
+    String ALREADY_REPORTED = "AR";
+
     // TODO: 500
     String DATABASE_ERROR = "DBE"; // HTTP STATUS: 500 디비 오류
 

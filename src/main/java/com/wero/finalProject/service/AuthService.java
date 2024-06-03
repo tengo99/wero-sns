@@ -1,8 +1,18 @@
 package com.wero.finalProject.service;
 
-import com.wero.finalProject.dto.request.auth.*;
-import com.wero.finalProject.dto.response.auth.*;
 import org.springframework.http.ResponseEntity;
+
+import com.wero.finalProject.dto.request.auth.CheckCertificationRequestDto;
+import com.wero.finalProject.dto.request.auth.EmailCertificationRequestDto;
+import com.wero.finalProject.dto.request.auth.IdCheckRequestDto;
+import com.wero.finalProject.dto.request.auth.RefreshTokenRequestDto;
+import com.wero.finalProject.dto.request.auth.RegisterRequestDto;
+import com.wero.finalProject.dto.request.auth.SignInRequestDto;
+import com.wero.finalProject.dto.response.auth.CheckCertificationResponseDto;
+import com.wero.finalProject.dto.response.auth.EmailCertificationResponseDto;
+import com.wero.finalProject.dto.response.auth.IdCheckResponseDto;
+import com.wero.finalProject.dto.response.auth.RegisterResponseDto;
+import com.wero.finalProject.dto.response.auth.SignInResponseDto;
 
 /**
  * @작성자:오현암
@@ -12,9 +22,15 @@ import org.springframework.http.ResponseEntity;
  **/
 public interface AuthService {
     ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto);
+
     ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto);
+
     ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto);
+
     ResponseEntity<? super RegisterResponseDto> register(RegisterRequestDto dto);
+
     ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto);
+
+    ResponseEntity<?> refreshToken(RefreshTokenRequestDto refreshTokenRequest);
 
 }

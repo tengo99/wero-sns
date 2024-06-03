@@ -1,8 +1,11 @@
 package com.wero.finalProject.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +17,9 @@ import com.wero.finalProject.dto.request.user.UserDeleteRequestDto;
 import com.wero.finalProject.dto.request.user.UserPostPictureRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateEmailRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateRequestDto;
+import com.wero.finalProject.dto.response.user.FindUserResponseDto;
 import com.wero.finalProject.dto.response.user.UserDeleteResponseDto;
+import com.wero.finalProject.dto.response.user.UserResponseDto;
 import com.wero.finalProject.dto.response.user.UserUpdateResponseDto;
 import com.wero.finalProject.service.UserService;
 
@@ -60,11 +65,29 @@ public class UserController {
         return response;
     }
 
+    @GetMapping(value = "/find/prof")
+    public ResponseEntity<List<String>> findPic(@AuthenticationPrincipal String userId) {
+        List<String> response = userService.findUserPicture(userId);
+        return ResponseEntity.ok().body(response);
+    }
+
     @DeleteMapping(value = "/delete")
     public ResponseEntity<? super UserDeleteResponseDto> delUser(@RequestBody @Valid UserDeleteRequestDto requestBody,
             @AuthenticationPrincipal String userId) {
         ResponseEntity<? super UserDeleteResponseDto> response = userService.userDelete(requestBody, userId);
         return response;
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUser(@AuthenticationPrincipal String userId) {
+        try {
+            UserResponseDto response = userService.findByUserId(userId);
+
+            return FindUserResponseDto.getUserSuccess(response);
+
+        } catch (Exception e) {
+            return FindUserResponseDto.getUserFail();
+        }
     }
 
     // @PatchMapping(value ="/update/prof")

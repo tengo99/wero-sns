@@ -34,8 +34,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String userId = oauth2User.getName();
         String token = jwtProvider.create(userId);
+        System.out.println("유저아이디: " + userId);
 
-        response.sendRedirect("http://localhost:3000/auth/oauth2-response/" + token + "/3600");
+        response.sendRedirect("https://werosns.life/auth/oauth2-response/" +token+"/3600");
 
     }
 

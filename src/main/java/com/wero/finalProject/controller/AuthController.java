@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wero.finalProject.dto.request.auth.CheckCertificationRequestDto;
 import com.wero.finalProject.dto.request.auth.EmailCertificationRequestDto;
 import com.wero.finalProject.dto.request.auth.IdCheckRequestDto;
+import com.wero.finalProject.dto.request.auth.RefreshTokenRequestDto;
 import com.wero.finalProject.dto.request.auth.RegisterRequestDto;
 import com.wero.finalProject.dto.request.auth.SignInRequestDto;
 import com.wero.finalProject.dto.response.auth.CheckCertificationResponseDto;
@@ -70,6 +71,13 @@ public class AuthController {
         return response;
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(
+            @RequestBody @Valid RefreshTokenRequestDto requestBody) {
+        ResponseEntity<?> response = authService.refreshToken(requestBody);
+        return response;
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         // 액세스 토큰 쿠키 만료
@@ -80,13 +88,14 @@ public class AuthController {
         response.addCookie(accessTokenCookie);
 
         // // 리프레시 토큰 쿠키도 만료
-        // Cookie refreshTokenCookie = new Cookie("refreshToken", null);
-        // refreshTokenCookie.setHttpOnly(true);
-        // refreshTokenCookie.setPath("/");
-        // refreshTokenCookie.setMaxAge(0); // 쿠키를 즉시 만료시킴
-        // response.addCookie(refreshTokenCookie);
+        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0); // 쿠키를 즉시 만료시킴
+        response.addCookie(refreshTokenCookie);
 
         // 로그아웃 성공 응답
         return ResponseEntity.ok("Logged out successfully");
     }
+
 }

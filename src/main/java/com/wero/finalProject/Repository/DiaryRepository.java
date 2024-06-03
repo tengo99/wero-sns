@@ -1,8 +1,11 @@
 package com.wero.finalProject.Repository;
 
-import com.wero.finalProject.domain.DiaryEntity;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.wero.finalProject.domain.DiaryEntity;
 
 /**
  * @작성자:최기원
@@ -12,5 +15,7 @@ import org.springframework.stereotype.Repository;
  **/
 
 @Repository
-public interface DiaryRepository extends JpaRepository<DiaryEntity,Integer> {
+public interface DiaryRepository extends JpaRepository<DiaryEntity, Integer> {
+
+    List<DiaryEntity> findByWriter_UserId(String userId);
 }

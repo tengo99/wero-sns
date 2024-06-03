@@ -12,16 +12,18 @@ import lombok.Setter;
 @Setter
 public class SearchRequestDto {
 
-    private Integer diary_id;
+    private Integer mainfeed_id;
     private String content;
     private String category;
     private String nickName;
+    private String image;
 
-    public SearchRequestDto(Integer diary_id, String content, String category, String nickName) {
-        this.diary_id = diary_id;
+    public SearchRequestDto(Integer mainfeed_id, String content, String category, String nickName, String image) {
+        this.mainfeed_id = mainfeed_id;
         this.content = content;
         this.category = category;
         this.nickName = nickName;
+        this.image = image;
     }
 
 }

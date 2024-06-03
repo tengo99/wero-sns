@@ -7,7 +7,13 @@ import com.wero.finalProject.dto.request.auth.RegisterRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateEmailRequestDto;
 import com.wero.finalProject.dto.request.user.UserUpdateRequestDto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,7 +50,10 @@ public class UserEntity {
     @Column(name = "gender", updatable = true)
     private String gender;
 
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MainFeedEntity> mainFeeds = new HashSet<>();
+
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LikeEntity> likes = new HashSet<>();
 
     // TODO: Enum화 시키기
@@ -86,6 +95,38 @@ public class UserEntity {
     public void patchUserEmail(UserUpdateEmailRequestDto dto, String userId) {
         this.userId = userId;
         this.email = dto.getEmail();
+    }
+
+    public void suspensionUserEntity(Boolean isRestriction) {
+        this.restriction = isRestriction;
+    }
+
+    public UserSuspensionDto toSuspensionDto() {
+        return new UserSuspensionDto(this.userId, this.email, this.restriction);
+    }
+
+    public static class UserSuspensionDto {
+        private String userId;
+        private String email;
+        private boolean restriction;
+
+        public UserSuspensionDto(String userId, String email, boolean restriction) {
+            this.userId = userId;
+            this.email = email;
+            this.restriction = restriction;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public boolean isRestriction() {
+            return restriction;
+        }
     }
 
 }

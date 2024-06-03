@@ -1,5 +1,9 @@
 package com.wero.finalProject.Repository;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +26,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     boolean existsByNickName(String nickName);
 
     UserEntity findByNickName(String nickName);
+
+    Page<UserEntity> findByRestriction(boolean restriction, Pageable pageable);
+
+    List<UserEntity> findByRestriction(boolean restriction);
 }
