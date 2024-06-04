@@ -71,7 +71,9 @@ kakao oven - <https://ovenapp.io/view/SaTiTCEQyNfk5FdeOq1lDkJuGsNogCVE/>
 ![리드미 - 회면실사2](https://github.com/Path-Finder-Org/We-Ro-SNS/assets/104974710/a6d343da-bbcf-47c0-b386-5a0122641d9a)
 
 ## 프로젝트 DB ERD
-2024-06-01 수정
-![스크린샷 2024-06-01 093220](https://github.com/Path-Finder-Org/We-Ro-SNS/assets/104974710/d8271717-3812-4efc-a88e-cdcc4dd0d1dd)
+2024-06-03 수정
+![스크린샷 2024-06-03 153847](https://github.com/Path-Finder-Org/We-Ro-SNS/assets/104974710/47d53569-b0ac-44de-b26f-d2a5804a9a54)
+
+
 
 

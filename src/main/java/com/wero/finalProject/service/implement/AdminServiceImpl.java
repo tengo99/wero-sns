@@ -44,14 +44,23 @@ public class AdminServiceImpl implements AdminService {
 
         // 신고된 피드 길이 조회
         @Override
-        public Integer getDistinctReportsByMainFeedSize() {
+        public Integer getDistinctReportsByMainFeedSize(String user) {
+                if (user == null) {
+                        // userId가 null인 경우 예외 던지기
+                        throw new IllegalArgumentException("User ID cannot be null");
+                }
                 Integer allReports = reportRepository.findAll().size();
                 return allReports;
         }
 
         // 신고된 피드 조회
         @Override
-        public List<ReportResponseDto> getDistinctReportsByMainFeed(int page, int size) {
+        public List<ReportResponseDto> getDistinctReportsByMainFeed(String user, int page, int size) {
+
+                if (user == null) {
+                        // userId가 null인 경우 예외 던지기
+                        throw new IllegalArgumentException("User ID cannot be null");
+                }
 
                 Page<ReportEntity> allReportsPage = reportRepository
                                 .findAllByOrderByReportedTimeAsc(PageRequest.of(page, size));
@@ -79,24 +88,23 @@ public class AdminServiceImpl implements AdminService {
 
         // 유저 정지
         @Override
-        public ResponseEntity<?> userSuspension(String userId) {
+        public ResponseEntity<?> userSuspension(String user, String userId) {
                 try {
-                        UserEntity user = userService.findUserById(userId);
-
                         if (user == null) {
                                 throw new EntityNotFoundException();
                         }
+                        UserEntity reportUser = userService.findUserById(userId);
 
-                        boolean newRestrictionStatus = !user.isRestriction();
+                        boolean newRestrictionStatus = !reportUser.isRestriction();
 
-                        if (user.isRestriction() == false) {
-                                user.suspensionUserEntity(newRestrictionStatus);
+                        if (reportUser.isRestriction() == false) {
+                                reportUser.suspensionUserEntity(newRestrictionStatus);
                         }
 
-                        if (user.isRestriction() == true) {
-                                user.suspensionUserEntity(newRestrictionStatus);
+                        if (reportUser.isRestriction() == true) {
+                                reportUser.suspensionUserEntity(newRestrictionStatus);
                         }
-                        userRepository.save(user);
+                        userRepository.save(reportUser);
                         return UserUpdateResponseDto.success();
 
                 } catch (Exception e) {
@@ -107,21 +115,27 @@ public class AdminServiceImpl implements AdminService {
 
         // 정지된 유저 리스트 길이 조회
         @Override
-        public Integer getUserSuspensionSize() {
+        public Integer getUserSuspensionSize(String user) {
+                if (user == null) {
+                        throw new EntityNotFoundException();
+                }
                 Integer allUsers = userRepository.findByRestriction(true).size();
                 return allUsers;
         }
 
         // 정지 유저 조회
         @Override
-        public List<UserEntity.UserSuspensionDto> getUserSuspension(int page, int size) {
+        public List<UserEntity.UserSuspensionDto> getUserSuspension(String user, int page, int size) {
+                if (user == null) {
+                        throw new EntityNotFoundException();
+                }
 
                 Page<UserEntity> allSuspensionUser = userRepository.findByRestriction(true,
                                 PageRequest.of(page, size));
                 List<UserEntity.UserSuspensionDto> suspensionDtoList = new ArrayList<>();
 
-                for (UserEntity user : allSuspensionUser) {
-                        suspensionDtoList.add(user.toSuspensionDto());
+                for (UserEntity reportUser : allSuspensionUser) {
+                        suspensionDtoList.add(reportUser.toSuspensionDto());
                 }
 
                 return suspensionDtoList;

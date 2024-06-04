@@ -9,15 +9,15 @@ import com.wero.finalProject.dto.response.report.ReportResponseDto;
 
 public interface AdminService {
 
-    Integer getDistinctReportsByMainFeedSize();
+    Integer getDistinctReportsByMainFeedSize(String user);
 
-    List<ReportResponseDto> getDistinctReportsByMainFeed(int page, int size);
+    List<ReportResponseDto> getDistinctReportsByMainFeed(String user, int page, int size);
 
-    ResponseEntity<?> userSuspension(String userId);
+    ResponseEntity<?> userSuspension(String user, String userId);
 
-    Integer getUserSuspensionSize();
+    Integer getUserSuspensionSize(String user);
 
-    List<UserEntity.UserSuspensionDto> getUserSuspension(int page, int size);
+    List<UserEntity.UserSuspensionDto> getUserSuspension(String user, int page, int size);
 
     // void deleteReport(Integer id);
 }

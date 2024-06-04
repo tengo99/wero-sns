@@ -58,16 +58,13 @@ public class SecurityConfig{
                                 .sessionManagement(sessionManagement -> sessionManagement
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(request -> request
-                                                .requestMatchers("/", "/api/v1/auth/**", "/api/v1/cs/**", "/uploads/**", "/oauth2/**", "api/v1/nonuser/**").permitAll()
-                                                .requestMatchers("/api/v1/user/**").hasRole("USER")
                                                 .requestMatchers("/", "/api/v1/auth/**", "/api/v1/cs/**", "/uploads/**",
                                                                 "/oauth2/**", "/api/v1/nonuser/**")
                                                 .permitAll()
-
                                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
+                                                .requestMatchers("/api/v1/user/**").hasRole("ADMIN")
                                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                                                .anyRequest().authenticated()
-                                )
+                                                .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2
                                                 .authorizationEndpoint(endpoint->endpoint.baseUri("/api/v1/auth/oauth2"))
                                 .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
@@ -91,6 +88,7 @@ public class SecurityConfig{
                 corsConfiguration.setAllowCredentials(true);
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                 // source.registerCorsConfiguration("/api/v1/**", corsConfiguration);
+                // source.registerCorsConfiguration("/api/v1/admin/**", corsConfiguration);
                 source.registerCorsConfiguration("/**", corsConfiguration);
                 return source;
         }
